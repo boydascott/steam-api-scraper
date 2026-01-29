@@ -2,15 +2,11 @@ package com.bas;
 
 import com.bas.api_call.ApiCall;
 import com.bas.api_response.Response;
+import com.bas.api_response.SteamApp;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class App
 {
@@ -21,42 +17,53 @@ public class App
 
         int i = -1;
 
+
+        // Read in app ids
         do {
-            System.out.println("running");
+            System.out.println("Executing Request...");
 
-            Response temp = api.deserialiseGetAppListResponse(api.getResponse(api.setGetAppListRequest()));
+            HttpRequest request = api.setGetAppListRequest();
 
-            System.out.println(temp.getApps());
+            HttpResponse<String> httpResponse = api.getResponse(request);
+
+            if (httpResponse.statusCode() == 200) {
+                System.out.println("Request Successful.");
+            } else {
+                System.out.println("Something went wrong.");
+                System.exit(1);
+            }
+
+            Response temp = api.deserialiseGetAppListResponse(httpResponse);
 
             response.setApps(temp.getApps());
 
             response.setLast_appid(temp.getLast_appid());
 
-            System.out.println(response.getApps().get(0).getAppid());
-            System.out.println(response.getLast_appid());
             i++;
-        } while (i < 4);
+        } while (response.getLast_appid() != 0);
 
+        for (int j = 0; j < 40; j++) {
+            int appid = response.getApps().get(j).getAppid();
 
-//        api.deserialiseGetAppListResponse(api.getResponse(api.setGetAppListRequest()));
-//
-//        String url = "https://store.steampowered.com/api/appdetails?appids=10";
-//        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-//
-//        HttpClient client = HttpClient.newHttpClient();
-//        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//
-//        System.out.println("Status code: " + response.statusCode());
-//        System.out.println(response.body());
+            System.out.println("Executing Request...");
 
-//        System.out.println(responses.get(0).getApps().get(0));
+            HttpRequest request = api.setAppDetailsRequest(appid);
 
-//        CharSequence start =  "{\"" + apps.get(0).getAppid() +"\":";
-//        CharSequence end = "\"}}}}}";
-//
-//        String test = response.body().replace(start, "");
-//        test = test.replace(end, "\"}}}}");
-//
-//        System.out.println(test);
+            HttpResponse<String> httpResponse = api.getResponse(request);
+
+            if (httpResponse.statusCode() == 200) {
+                System.out.println("Request Successful.");
+            } else {
+                System.out.println("Something went wrong.");
+                System.exit(1);
+            }
+
+            SteamApp app = api.deserialiseAppDetailsResponse(httpResponse, appid);
+
+            System.out.println("Name: " + app.getName());
+            System.out.println("App id: " + app.getAppid());
+
+            Thread.sleep(1500);
+        }
     }
 }
