@@ -49,7 +49,7 @@ public class ApiCall {
 
         Response deserialisedRepsonse = gson.fromJson(response.body(), Response.class);
 
-        setLast_appid(deserialisedRepsonse.getResponse().getLast_appid());
+        setLast_appid(deserialisedRepsonse.getResponse().getLast_agitppid());
 
         return deserialisedRepsonse;
     }
