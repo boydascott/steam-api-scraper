@@ -6,14 +6,14 @@ import java.util.List;
 
 public class Results {
 
-    private List<App> apps;
+    private List<SteamApps> apps;
     private int last_appid;
 
-    public List<App> getApps() {
+    public List<SteamApps> getApps() {
         return apps;
     }
 
-    public void setApps(List<App> apps) {
+    public void setApps(List<SteamApps> apps) {
         this.apps = apps;
     }
 
