@@ -29,27 +29,32 @@ public class ApiCall {
         this.last_appid = last_appid;
     }
 
-    public HttpRequest setRequest () {
-        String url = "http://api.steampowered.com/IStoreService/GetAppList/v1/?key=" + apikey + "&max_results=50000&last_appid=" + getLast_appid() + "&format=json";
+    public HttpRequest setGetAppListRequest() {
+        String url = "http://api.steampowered.com/IStoreService/GetAppList/v1/?key=" + apikey + "&max_results=50000&last_appid=" + last_appid + "&format=json";
         return HttpRequest.newBuilder().uri(URI.create(url)).build();
     }
 
-    public HttpResponse<String> getResponse (HttpRequest request) throws IOException, InterruptedException {
+    public HttpResponse<String> getResponse(HttpRequest request) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String>  response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         System.out.println("Status code: " + response.statusCode());
-        System.out.println(response.body());
 
         return response;
     }
 
-    public Response deserialiseResponse (HttpResponse<String> response) {
+    public Response deserialiseGetAppListResponse(HttpResponse<String> response) {
+        CharSequence start =  "{\"response\":";
+        CharSequence end = "}}";
+
+        String test = response.body().replace(start, "");
+        test = test.replace(end, "}");
+
         Gson gson = new Gson();
 
-        Response deserialisedRepsonse = gson.fromJson(response.body(), Response.class);
+        Response deserialisedRepsonse = gson.fromJson(test, Response.class);
 
-        setLast_appid(deserialisedRepsonse.getResponse().getLast_appid());
+        setLast_appid(deserialisedRepsonse.getLast_appid());
 
         return deserialisedRepsonse;
     }

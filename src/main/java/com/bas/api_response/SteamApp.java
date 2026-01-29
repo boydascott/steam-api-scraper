@@ -1,6 +1,6 @@
 package com.bas.api_response;
 
-public class SteamApps {
+public class SteamApp {
     private int appid;
 
     public int getAppid() {

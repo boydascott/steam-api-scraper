@@ -1,20 +1,29 @@
 package com.bas.api_response;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Response {
 
-    private Results response;
+    private ArrayList<SteamApp> apps;
+    private int last_appid;
 
-    public Results getResponse () {
-        return response;
+    public Response () {
+        this.apps = new ArrayList<>();
     }
 
-    public List<SteamApps> getApps() {
-        return response.getApps();
+    public ArrayList<SteamApp> getApps() {
+        return apps;
     }
 
-    public void setResponse(Results response) {
-        this.response = response;
+    public void setApps(ArrayList<SteamApp> apps) {
+        this.apps.addAll(apps);
+    }
+
+    public int getLast_appid() {
+        return last_appid;
+    }
+
+    public void setLast_appid(int last_appid) {
+        this.last_appid = last_appid;
     }
 }
